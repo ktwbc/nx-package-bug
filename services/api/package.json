@@ -19,7 +19,7 @@
     "@fastify/sensible": "~6.0.2",
     "@fastify/swagger": "^9.4.2",
     "@fastify/swagger-ui": "^5.2.2",
-    "@ktwbc/lib": "workspace:1.0.3",
+    "@ktwbc/lib": "workspace:*",
     "@okta/jwt-verifier": "^3.0.1",
     "@peak-ai/ais-service-discovery": "^1.0.0",
     "@swarmion/serverless-helpers": "^0.28.2",

@@ -230,7 +230,7 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
       '@ktwbc/lib':
-        specifier: workspace:1.0.3
+        specifier: workspace:*
         version: link:../../packages/lib
       '@okta/jwt-verifier':
         specifier: ^3.0.1
