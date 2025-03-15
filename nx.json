@@ -1,0 +1,79 @@
+{
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*"],
+    "production": ["!{projectRoot}/**/*.test.tsx?"]
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "options": {
+        "cacheableOperations": ["build"],
+        "runtimeCacheInputs": ["pnpm-lock.yaml"],
+        "createPrunedLockFile": false
+      }
+    }
+  },
+  "targetDefaults": {
+    "build": {
+      "inputs": ["production", "^production"],
+      "dependsOn": ["^build", "^package"],
+      "cache": true
+    },
+    "package": {
+      "inputs": ["production", "^production"],
+      "dependsOn": ["^package"],
+      "outputs": ["{projectRoot}/dist", "{projectRoot}/tsconfig.build.tsbuildinfo"],
+      "cache": true
+    },
+    "deploy": {
+      "inputs": ["production", "^production"],
+      "dependsOn": ["^package", "^deploy-dev", "^build", "bootstrap"],
+      "options": {
+        "env": "APP_ENV"
+      }
+    },
+    "destroy": {
+      "inputs": ["production", "^production"],
+      "dependsOn": ["^destroy-dev"],
+      "options": {
+        "env": "APP_ENV"
+      }
+    },
+    "deploy-stg": {
+      "inputs": ["production", "^production"],
+      "dependsOn": ["^package", "^build", "^deploy-stg", "bootstrap-stg"]
+    },
+    "deploy-production": {
+      "inputs": ["production", "^production"],
+      "dependsOn": ["^package", "^build", "^deploy-production", "bootstrap-production"]
+    },
+    "test-linter": {
+      "inputs": ["default", "^production", "{workspaceRoot}/.eslintrc.js"],
+      "dependsOn": ["^package"],
+      "cache": true
+    },
+    "test-unit": {
+      "inputs": ["default", "^production"],
+      "dependsOn": ["^package"],
+      "outputs": ["{projectRoot}/coverage"],
+      "cache": true
+    },
+    "test-type": {
+      "inputs": ["default", "^production"],
+      "dependsOn": ["^package"],
+      "cache": true
+    },
+    "test-circular": {
+      "inputs": ["default", "^production"],
+      "dependsOn": ["^package"],
+      "cache": true
+    },
+    "bootstrap": {
+      "cache": true
+    },
+    "test-stylelint": {
+      "cache": true
+    }
+  },
+  "useInferencePlugins": false,
+  "defaultBase": "origin/main"
+}

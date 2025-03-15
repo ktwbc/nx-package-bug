@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.options.json",
+  "compilerOptions": {
+    "baseUrl": "src",
+    "rootDir": "src",
+    "outDir": "./dist/types",
+    "lib": ["dom", "es2019"],
+    "module": "commonjs",
+    "target": "es2019",
+    "strictPropertyInitialization": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "experimentalDecorators": true
+  },
+  "ts-node": {},
+  "include": ["./**/*.ts"],
+  "exclude": ["./vite*", "./**/*.test.ts", "./dist", "./tsup.config.ts"]
+}

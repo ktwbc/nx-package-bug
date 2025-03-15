@@ -1,0 +1,113 @@
+{
+  "name": "api",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "services/api/src",
+  "projectType": "application",
+  "tags": [],
+  "namedInputs": {
+    "default": ["src/**/*", ".env*"]
+  },
+  "targets": {
+    "daemon": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx daemon start"
+      }
+    },
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "development",
+      "options": {
+        "platform": "node",
+        "outputPath": "dist/services/api",
+        "format": ["cjs"],
+        "bundle": false,
+        "main": "services/api/src/main.ts",
+        "tsConfig": "services/api/tsconfig.app.json",
+        "assets": ["services/api/src/assets"],
+        "generatePackageJson": true,
+        "packageJson": {
+          "transform": "services/api/package-json-transform.js"
+        },
+        "esbuildOptions": {
+          "sourcemap": true,
+          "outExtension": {
+            ".js": ".js"
+          }
+        }
+      },
+      "configurations": {
+        "development": {
+          "generateLockfile": false,
+          "esbuildOptions": {
+            "sourcemap": true,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        },
+        "production": {
+          "generateLockfile": true,
+          "esbuildOptions": {
+            "sourcemap": false,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        }
+      }
+    },
+    "*start": {
+      "executor": "@nx/js:node",
+      "dependsOn": ["daemon", "build"],
+      "options": {
+        "buildTarget": "api:build:development"
+      }
+    },
+    "test": {
+      "options": {
+        "passWithNoTests": true
+      }
+    },
+    "build-docker": {
+      "dependsOn": ["build"],
+      "command": "docker build -f docker/fastify.Dockerfile -t api:local -t 814927092319.dkr.ecr.us-east-2.amazonaws.com/api:$APP_ENV --build-arg PROJECT=api --build-arg APP_ENV=$APP_ENV .",
+      "configurations": {
+        "development": {
+          "command": "docker build -f docker/fastify.Dockerfile -t api:dev -t 814927092319.dkr.ecr.us-east-2.amazonaws.com/api:dev --build-arg PROJECT=api --build-arg APP_ENV=dev ."
+        },
+        "production": {
+          "command": "docker build -f docker/fastify.Dockerfile -t api:prod -t 814927092319.dkr.ecr.us-east-2.amazonaws.com/api:prod --build-arg PROJECT=api --build-arg APP_ENV=prod ."
+        }
+      }
+    },
+    "docker-login": {
+      "command": "aws ecr get-login-password --region us-east-2 --profile=cent | docker login --username AWS --password-stdin 814927092319.dkr.ecr.us-east-2.amazonaws.com"
+    },
+    "docker-push": {
+      "dependsOn": ["build-docker", "docker-login"],
+      "command": "docker push 814927092319.dkr.ecr.us-east-2.amazonaws.com/api:prod",
+      "configurations": {
+        "development": {
+          "command": "docker push 814927092319.dkr.ecr.us-east-2.amazonaws.com/api:dev"
+        },
+        "production": {
+          "command": "docker push 814927092319.dkr.ecr.us-east-2.amazonaws.com/api:prod"
+        }
+      }
+    },
+    "deploy-fargate": {
+      "dependsOn": ["docker-push"],
+      "command": "aws/fargate-update.sh",
+      "configurations": {
+        "development": {
+          "command": "aws/update-fargate.sh api dev"
+        },
+        "production": {
+          "command": "aws/update-fargate.sh api prod"
+        }
+      }
+    }
+  }
+}

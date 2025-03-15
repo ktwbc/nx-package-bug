@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "incremental": true,
+    "noEmitOnError": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "moduleResolution": "node",
+    "strict": true,
+    "types": ["node", "vitest/globals"],
+    "lib": ["dom", "ES2022"],
+    "module": "node16",
+    "target": "ES2022",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "sourceMap": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true
+  },
+  "ts-node": {
+    "compilerOptions": {
+      // serverless framework uses CJS 🫠
+      "module": "CommonJS",
+      "moduleResolution": "Node"
+    },
+    "transpileOnly": true,
+    "require": ["tsconfig-paths/register"]
+  }
+}

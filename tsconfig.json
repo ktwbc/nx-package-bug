@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.options.json",
+  "files": [],
+  "references": [
+    {
+      "path": "./packages/lib/tsconfig.build.json"
+    },
+    {
+      "path": "./services/api/tsconfig.json"
+    }
+  ]
+}
